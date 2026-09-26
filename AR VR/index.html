@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+  <title>Tur Virtual 360 - Benteng Rotterdam</title>
+  <!-- Gunakan A-Frame versi stabil -->
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+</head>
+
+<body>
+
+  <a-scene webxr="optionalFeatures: hit-test">
+
+    <!-- ================= 1. MANAJEMEN ASSET ================= -->
+    <a-assets>
+      <!-- Preload Foto 360 -->
+      <img id="img-nomor1" src="NOMOR1.jpg">
+      <img id="img-nomor2" src="NOMOR2.jpg">
+      <img id="img-nomor3" src="NOMOR3.jpg">
+      <img id="img-nomor4" src="NOMOR4.jpg">
+      <img id="img-nomor5" src="NOMOR5.jpg">
+      <!-- lanjutkan tambahkan tag img untuk NOMOR6 sampai NOMOR18 di sini -->
+
+      <!-- Preload Model 3D -->
+      <a-asset-item id="model1" src="3Dmodel1.glb"></a-asset-item>
+      <a-asset-item id="model2" src="3Dmodel2.glb"></a-asset-item>
+      <a-asset-item id="model3" src="3Dmodel3.glb"></a-asset-item>
+      <a-asset-item id="model4" src="3Dmodel4.glb"></a-asset-item>
+      <!-- Pastikan Anda punya 3Dmodel5.glb jika ingin memanggilnya, di daftar file kiri Anda hanya sampai 3Dmodel4.glb -->
+    </a-assets>
+
+    <!-- ================= 2. KAMERA & KURSOR (DIKUNCI) ================= -->
+    <a-entity id="rig" position="0 0 0">
+      <!-- wasd-controls dimatikan agar user tidak bisa jalan-jalan merusak posisi hotspot -->
+      <a-camera id="camera" look-controls wasd-controls="enabled: false">
+        <a-cursor id="cursor" raycaster="objects: .clickable" material="color: #00FFCC; shader: flat" position="0 0 -1"
+          geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02">
+        </a-cursor>
+      </a-camera>
+    </a-entity>
+
+    <!-- ================= 3. LATAR FOTO 360 ================= -->
+    <!-- rotation="-90 0 0" digunakan jika foto 360 Anda terbalik, jika tidak, hapus rotation ini -->
+    <a-sky id="main-sky" src="#img-nomor1"></a-sky>
+
+    <!-- ================= 4. WADAH HOTSPOT & MODEL 3D ================= -->
+    <a-entity id="hotspots-container"></a-entity>
+    <a-entity id="models-container"></a-entity>
+
+  </a-scene>
+
+  <!-- ================= 5. LOGIKA NAVIGASI JAVASCRIPT ================= -->
+  <script>
+    const tourData = {
+      // --- DATA GAMBAR 1 ---
+      "nomor1": {
+        sky: "#img-nomor1",
+        hotspots: [
+          // position: X (kiri/kanan), Y (bawah/atas), Z (depan/belakang)
+          // rotation X=-90 agar panah tertidur sejajar tanah
+          { targetSpot: "nomor2", position: "0 -2 -5", rotation: "-90 0 0" }
+        ],
+        models: [
+          // scale dibesarkan menjadi 2 2 2 atau 3 3 3
+          { modelId: "#model1", position: "-3 -1 -4", scale: "2 2 2", rotation: "0 45 0" }
+        ]
+      },
+
+      // --- DATA GAMBAR 2 ---
+      "nomor2": {
+        sky: "#img-nomor2",
+        hotspots: [
+          { targetSpot: "nomor1", position: "0 -2 5", rotation: "-90 180 0" }, // Panah balik ke no 1
+          { targetSpot: "nomor3", position: "4 -2 -3", rotation: "-90 -45 0" } // Panah maju ke no 3
+        ],
+        models: [
+          { modelId: "#model2", position: "2 -1 -3", scale: "1.5 1.5 1.5", rotation: "0 0 0" }
+        ]
+      },
+
+      // --- DATA GAMBAR 3 ---
+      "nomor3": {
+        sky: "#img-nomor3",
+        hotspots: [
+          { targetSpot: "nomor2", position: "-4 -2 3", rotation: "-90 135 0" },
+          { targetSpot: "nomor4", position: "0 -2 -5", rotation: "-90 0 0" }
+        ],
+        models: [] // Kosongkan array jika di gambar ini tidak ada model 3D
+      },
+
+      // --- DATA GAMBAR 4 ---
+      "nomor4": {
+        sky: "#img-nomor4",
+        hotspots: [
+          { targetSpot: "nomor3", position: "0 -2 5", rotation: "-90 180 0" },
+          { targetSpot: "nomor5", position: "2 -2 -4", rotation: "-90 -30 0" }
+        ],
+        models: [
+          { modelId: "#model3", position: "0 0 -5", scale: "2.5 2.5 2.5", rotation: "0 0 0" }
+        ]
+      },
+
+      // --- DATA GAMBAR 5 ---
+      "nomor5": {
+        sky: "#img-nomor5",
+        hotspots: [
+          { targetSpot: "nomor4", position: "-2 -2 4", rotation: "-90 150 0" },
+          { targetSpot: "nomor6", position: "0 -2 -5", rotation: "-90 0 0" }
+        ],
+        models: []
+      }
+
+      // =================================================================
+      // LANJUTKAN SENDIRI UNTUK "nomor6" SAMPAI "nomor18" DENGAN POLA YANG SAMA
+      // Pastikan setiap blok diakhiri tanda koma (,), KECUALI blok terakhir ("nomor18")
+      // =================================================================
+    };
+
+    function loadSpot(spotId) {
+      const spot = tourData[spotId];
+      if (!spot) return;
+
+      // Ganti Foto Latar
+      document.querySelector('#main-sky').setAttribute('src', spot.sky);
+
+      // Render Hotspot
+      const hotspotContainer = document.querySelector('#hotspots-container');
+      hotspotContainer.innerHTML = '';
+      spot.hotspots.forEach(hs => {
+        const hotspotEl = document.createElement('a-image');
+        hotspotEl.setAttribute('src', '#hotspot-icon');
+        hotspotEl.setAttribute('class', 'clickable');
+        hotspotEl.setAttribute('position', hs.position);
+        hotspotEl.setAttribute('rotation', hs.rotation);
+        // Membesarkan icon panah
+        hotspotEl.setAttribute('scale', '1.5 1.5 1.5');
+
+        hotspotEl.addEventListener('click', () => loadSpot(hs.targetSpot));
+        hotspotContainer.appendChild(hotspotEl);
+      });
+
+      // Render Model 3D
+      const modelContainer = document.querySelector('#models-container');
+      modelContainer.innerHTML = '';
+      spot.models.forEach(md => {
+        const modelEl = document.createElement('a-entity');
+        modelEl.setAttribute('gltf-model', md.modelId);
+        modelEl.setAttribute('position', md.position);
+        modelEl.setAttribute('scale', md.scale);
+        modelEl.setAttribute('rotation', md.rotation);
+        modelContainer.appendChild(modelEl);
+      });
+    }
+
+    // Jalankan pertama kali
+    window.addEventListener('load', () => loadSpot('nomor1'));
+  </script>
+</body>
+
+</html>

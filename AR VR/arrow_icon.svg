@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <!-- Mask to create a transparent cut-out hole for the ^ chevron arrow -->
+    <mask id="chevron-cutout">
+      <!-- Everything white in the mask is visible -->
+      <rect width="256" height="256" fill="#FFFFFF" />
+      <!-- Black stroke creates the transparent cut-out hole in the circle -->
+      <path d="M 86 142 L 128 100 L 170 142" fill="none" stroke="#000000" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" />
+    </mask>
+  </defs>
+
+  <!-- Drop shadow -->
+  <circle cx="128" cy="132" r="110" fill="rgba(0, 0, 0, 0.3)" />
+
+  <!-- Outer crisp white ring -->
+  <circle cx="128" cy="128" r="110" fill="none" stroke="#FFFFFF" stroke-width="12" />
+
+  <!-- Inner white circle disc with transparent chevron ^ cutout hole -->
+  <circle cx="128" cy="128" r="82" fill="#FFFFFF" mask="url(#chevron-cutout)" />
+</svg>

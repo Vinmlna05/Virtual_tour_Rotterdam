@@ -4,8 +4,9 @@
 <head>
   <meta charset="utf-8">
   <title>Tur Virtual 360 - Benteng Rotterdam</title>
-  <!-- Gunakan A-Frame versi stabil -->
+  <!-- Gunakan A-Frame versi stabil & look-at component -->
   <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
 </head>
 
 <body>
@@ -15,33 +16,49 @@
     <!-- ================= 1. MANAJEMEN ASSET ================= -->
     <a-assets>
       <!-- Preload Foto 360 -->
+      <!-- Preload Foto 360 (NOMOR1 s.d. NOMOR18) -->
       <img id="img-nomor1" src="NOMOR1.jpg">
       <img id="img-nomor2" src="NOMOR2.jpg">
       <img id="img-nomor3" src="NOMOR3.jpg">
       <img id="img-nomor4" src="NOMOR4.jpg">
       <img id="img-nomor5" src="NOMOR5.jpg">
-      <!-- lanjutkan tambahkan tag img untuk NOMOR6 sampai NOMOR18 di sini -->
+      <img id="img-nomor6" src="NOMOR6.jpg">
+      <img id="img-nomor7" src="NOMOR7.jpg">
+      <img id="img-nomor8" src="NOMOR8.jpg">
+      <img id="img-nomor9" src="NOMOR9.jpg">
+      <img id="img-nomor10" src="NOMOR10.jpg">
+      <img id="img-nomor11" src="NOMOR11.jpg">
+      <img id="img-nomor12" src="NOMOR12.jpg">
+      <img id="img-nomor13" src="NOMOR13.jpg">
+      <img id="img-nomor14" src="NOMOR14.jpg">
+      <img id="img-nomor15" src="NOMOR15.jpg">
+      <img id="img-nomor16" src="NOMOR16.jpg">
+      <img id="img-nomor17" src="NOMOR17.jpg">
+      <img id="img-nomor18" src="NOMOR18.jpg">
+
+      <!-- Preload Icon Hotspot -->
+      <img id="hotspot-icon" src="arrow_icon.svg">
+      <img id="info-icon" src="info_icon.svg">
 
       <!-- Preload Model 3D -->
       <a-asset-item id="model1" src="3Dmodel1.glb"></a-asset-item>
       <a-asset-item id="model2" src="3Dmodel2.glb"></a-asset-item>
       <a-asset-item id="model3" src="3Dmodel3.glb"></a-asset-item>
       <a-asset-item id="model4" src="3Dmodel4.glb"></a-asset-item>
-      <!-- Pastikan Anda punya 3Dmodel5.glb jika ingin memanggilnya, di daftar file kiri Anda hanya sampai 3Dmodel4.glb -->
     </a-assets>
 
-    <!-- ================= 2. KAMERA & KURSOR (DIKUNCI) ================= -->
+    <!-- ================= 2. KAMERA & KURSOR ================= -->
     <a-entity id="rig" position="0 0 0">
-      <!-- wasd-controls dimatikan agar user tidak bisa jalan-jalan merusak posisi hotspot -->
-      <a-camera id="camera" look-controls wasd-controls="enabled: false">
+      <!-- cursor="rayOrigin: mouse" mengizinkan klik langsung menggunakan kursor mouse di komputer -->
+      <a-camera id="camera" look-controls wasd-controls="enabled: false" cursor="rayOrigin: mouse"
+        raycaster="objects: .clickable">
         <a-cursor id="cursor" raycaster="objects: .clickable" material="color: #00FFCC; shader: flat" position="0 0 -1"
-          geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02">
+          geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.016">
         </a-cursor>
       </a-camera>
     </a-entity>
 
     <!-- ================= 3. LATAR FOTO 360 ================= -->
-    <!-- rotation="-90 0 0" digunakan jika foto 360 Anda terbalik, jika tidak, hapus rotation ini -->
     <a-sky id="main-sky" src="#img-nomor1"></a-sky>
 
     <!-- ================= 4. WADAH HOTSPOT & MODEL 3D ================= -->
@@ -50,29 +67,52 @@
 
   </a-scene>
 
+  <!-- ================= POPUP MODAL INFORMASI ================= -->
+  <div id="info-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.65); z-index: 20000; justify-content: center; align-items: center; backdrop-filter: blur(6px);">
+    <div
+      style="background: rgba(15, 23, 42, 0.95); color: #ffffff; border-radius: 16px; padding: 24px; max-width: 420px; width: 90%; border: 1px solid rgba(56, 182, 255, 0.4); box-shadow: 0 25px 50px rgba(0,0,0,0.8); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; animation: popIn 0.25s ease-out;">
+      <div
+        style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 12px;">
+        <img src="info_icon.svg" style="width: 36px; height: 36px;">
+        <div>
+          <span
+            style="font-size: 10px; text-transform: uppercase; color: #38b6ff; font-weight: bold; letter-spacing: 1px;">MODAL
+            INFORMASI</span>
+          <h3 id="info-modal-title" style="margin: 2px 0 0 0; font-size: 18px; color: #ffffff;">Ruangan Reservasi</h3>
+        </div>
+      </div>
+      <p id="info-modal-desc" style="font-size: 14px; color: #cbd5e1; line-height: 1.6; margin-bottom: 22px;">
+        Layanan informasi dan pendaftaran reservasi tiket kunjungan Benteng Rotterdam.
+      </p>
+      <button onclick="document.getElementById('info-modal').style.display='none'"
+        style="width: 100%; background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 14px; box-shadow: 0 4px 12px rgba(37,99,235,0.3);">
+        ✕ Tutup Informasi
+      </button>
+    </div>
+  </div>
+
   <!-- ================= 5. LOGIKA NAVIGASI JAVASCRIPT ================= -->
   <script>
     const tourData = {
-      // --- DATA GAMBAR 1 ---
+      // --- DATA GAMBAR 1 (Gerbang Utama) ---
       "nomor1": {
         sky: "#img-nomor1",
         hotspots: [
-          // position: X (kiri/kanan), Y (bawah/atas), Z (depan/belakang)
-          // rotation X=-90 agar panah tertidur sejajar tanah
-          { targetSpot: "nomor2", position: "0 -2 -5", rotation: "-90 0 0" }
+          { targetSpot: "nomor2", title: "2 - Gerbang Utama", position: "-1.86 0.64 6.75", rotation: "-60 -15 0" }
         ],
         models: [
-          // scale dibesarkan menjadi 2 2 2 atau 3 3 3
           { modelId: "#model1", position: "-3 -1 -4", scale: "2 2 2", rotation: "0 45 0" }
         ]
       },
 
-      // --- DATA GAMBAR 2 ---
+      // --- DATA GAMBAR 2 (Halaman Dalam) ---
       "nomor2": {
         sky: "#img-nomor2",
         hotspots: [
-          { targetSpot: "nomor1", position: "0 -2 5", rotation: "-90 180 0" }, // Panah balik ke no 1
-          { targetSpot: "nomor3", position: "4 -2 -3", rotation: "-90 -45 0" } // Panah maju ke no 3
+          { targetSpot: "nomor1", title: "2 - Keluar", position: "5.96 -1.06 -0.39", rotation: "-85 270 0" },
+          { targetSpot: "nomor16", title: "16 - Halaman Benteng", position: "-4.75 -0.04 0.41", rotation: "-70 90 0" },
+          { type: "info", title: "Ruangan Reservasi", description: "Pendaftaran & Informasi Reservasi Tiket Kunjungan.", position: "-3.43 1.09 4.8", rotation: "-65 -15 0" }
         ],
         models: [
           { modelId: "#model2", position: "2 -1 -3", scale: "1.5 1.5 1.5", rotation: "0 0 0" }
@@ -83,61 +123,324 @@
       "nomor3": {
         sky: "#img-nomor3",
         hotspots: [
-          { targetSpot: "nomor2", position: "-4 -2 3", rotation: "-90 135 0" },
-          { targetSpot: "nomor4", position: "0 -2 -5", rotation: "-90 0 0" }
+          { targetSpot: "nomor12", title: "Spot 12", position: "-5.89 -0.46 1.79", rotation: "-85 108 0" },
+          { targetSpot: "nomor16", title: "Spot 16", position: "8.31 0.63 -1.36", rotation: "-65 -75 0" }
         ],
-        models: [] // Kosongkan array jika di gambar ini tidak ada model 3D
+        models: []
       },
 
       // --- DATA GAMBAR 4 ---
       "nomor4": {
         sky: "#img-nomor4",
         hotspots: [
-          { targetSpot: "nomor3", position: "0 -2 5", rotation: "-90 180 0" },
-          { targetSpot: "nomor5", position: "2 -2 -4", rotation: "-90 -30 0" }
+          { targetSpot: "nomor6", title: "Spot 6", position: "-5.86 -0.11 -0.92", rotation: "-80 90 0" },
+          { targetSpot: "nomor16", title: "Spot 16", position: "0.93 0 5.56", rotation: "-75 177 0" }
         ],
         models: [
           { modelId: "#model3", position: "0 0 -5", scale: "2.5 2.5 2.5", rotation: "0 0 0" }
         ]
       },
 
-      // --- DATA GAMBAR 5 ---
+      // --- DATA GAMBAR 5 s.d. 18 ---
       "nomor5": {
         sky: "#img-nomor5",
         hotspots: [
-          { targetSpot: "nomor4", position: "-2 -2 4", rotation: "-90 150 0" },
-          { targetSpot: "nomor6", position: "0 -2 -5", rotation: "-90 0 0" }
+          { targetSpot: "nomor15", title: "Ke Spot 15", position: "6.19 0.88 -0.4", rotation: "-60 98 0" }
+        ],
+        models: [
+          { modelId: "#model3", position: "0 0 -5", scale: "2.5 2.5 2.5", rotation: "0 0 0" }
+        ]
+      },
+      "nomor6": {
+        sky: "#img-nomor6",
+        hotspots: [
+          { targetSpot: "nomor8", title: "Spot 8", position: "-4.47 -0.18 -4.3", rotation: "-85 0 0" },
+          { targetSpot: "nomor4", title: "Spot 4", position: "-3.83 -0.24 5.1", rotation: "-85 187 0" }
+        ],
+        models: [
+          { modelId: "#model3", position: "0 0 -5", scale: "2.5 2.5 2.5", rotation: "0 0 0" }
+        ]
+      },
+      "nomor7": { sky: "#img-nomor7", hotspots: [], models: [] },
+      "nomor8": {
+        sky: "#img-nomor8",
+        hotspots: [
+          { targetSpot: "nomor10", title: "Spot 10", position: "0.5 -0.72 -5.44", rotation: "-80 353 0" },
+          { targetSpot: "nomor6", title: "Spot 6", position: "-6.44 -0.65 0.94", rotation: "-80 74 0" }
+        ],
+        models: [
+          { modelId: "#model3", position: "0 0 -5", scale: "2.5 2.5 2.5", rotation: "0 0 0" }
+        ]
+      },
+      "nomor9": { sky: "#img-nomor9", hotspots: [], models: [] },
+      "nomor10": {
+        sky: "#img-nomor10",
+        hotspots: [
+          { targetSpot: "nomor8", title: "Spot 8", position: "-5.91 -0.72 -5.7", rotation: "-75 0 0" },
+          { targetSpot: "nomor12", title: "Spot 12", position: "6.7 -0.74 -0.23", rotation: "-75 267 0" }
+        ],
+        models: [
+          { modelId: "#model3", position: "0 0 -5", scale: "2.5 2.5 2.5", rotation: "0 0 0" }
+        ]
+      },
+      "nomor11": { sky: "#img-nomor11", hotspots: [], models: [] },
+      "nomor12": {
+        sky: "#img-nomor12",
+        hotspots: [
+          { targetSpot: "nomor10", title: "Spot 10", position: "-3.38 -1.22 5.97", rotation: "-70 152 0" },
+          { targetSpot: "nomor3", title: "Spot 3", position: "-3.94 -0.89 -4.89", rotation: "-80 21 0" }
+        ],
+        models: [
+          { modelId: "#model3", position: "1 0 -4", scale: "2.5 2.5 2.5", rotation: "0 90 0" }
+        ]
+      },
+      "nomor13": { sky: "#img-nomor13", hotspots: [], models: [] },
+      "nomor14": { sky: "#img-nomor14", hotspots: [], models: [] },
+      "nomor15": {
+        sky: "#img-nomor15",
+        hotspots: [
+          { targetSpot: "nomor17", title: "Ke Spot 17", position: "-0.94 -0.81 -4.65", rotation: "-70 0 0" },
+          { targetSpot: "nomor5", position: "5.84 -0.78 -1.36", rotation: "-65 270 0" }
         ],
         models: []
-      }
-
-      // =================================================================
-      // LANJUTKAN SENDIRI UNTUK "nomor6" SAMPAI "nomor18" DENGAN POLA YANG SAMA
-      // Pastikan setiap blok diakhiri tanda koma (,), KECUALI blok terakhir ("nomor18")
-      // =================================================================
+      },
+      "nomor16": {
+        sky: "#img-nomor16",
+        hotspots: [
+          { targetSpot: "nomor3", title: "Ke Spot 3", position: "-4.77 0.9 3.41", rotation: "-65 110 0" },
+          { targetSpot: "nomor15", title: "Ke Spot 15", position: "5.11 0.88 2.36", rotation: "-65 85 0" },
+          { targetSpot: "nomor4", title: "Spot 4", position: "-5.1 0.01 -2.6", rotation: "-75 19 0" }
+        ],
+        models: []
+      },
+      "nomor17": {
+        sky: "#img-nomor17",
+        hotspots: [
+          { targetSpot: "nomor15", title: "Turun Ke Spot 15", position: "-1.52 0.1 5.73", rotation: "-50 0 0" }
+        ],
+        models: []
+      },
+      "nomor18": { sky: "#img-nomor18", hotspots: [], models: [] }
     };
 
+    // Helper Pembuat Texture SVG Badge Base64 dengan Rounded Corners (Border-Radius)
+    function getBadgeDataURL(topColor, bottomColor) {
+      let svg = '';
+      if (bottomColor) {
+        svg = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="256" viewBox="0 0 512 256">
+          <defs>
+            <clipPath id="c"><rect width="512" height="256" rx="28" ry="28"/></clipPath>
+          </defs>
+          <g clip-path="url(#c)">
+            <rect width="512" height="100" fill="${topColor}"/>
+            <rect y="100" width="512" height="156" fill="${bottomColor}"/>
+          </g>
+        </svg>`;
+      } else {
+        svg = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="128" viewBox="0 0 512 128">
+          <rect width="512" height="128" rx="24" ry="24" fill="${topColor}"/>
+        </svg>`;
+      }
+      return 'data:image/svg+xml;base64,' + btoa(svg);
+    }
+
+    let currentSpotId = 'nomor1';
+
     function loadSpot(spotId) {
+      currentSpotId = spotId;
       const spot = tourData[spotId];
       if (!spot) return;
 
       // Ganti Foto Latar
-      document.querySelector('#main-sky').setAttribute('src', spot.sky);
+      const skyEl = document.querySelector('#main-sky');
+      skyEl.setAttribute('src', spot.sky);
+
+      // Aktifkan kursor clickable pada sky/lantai jika spot memiliki koneksi jalan (groundTarget)
+      if (spot.groundTarget) {
+        skyEl.classList.add('clickable');
+      } else {
+        skyEl.classList.remove('clickable');
+      }
 
       // Render Hotspot
       const hotspotContainer = document.querySelector('#hotspots-container');
       hotspotContainer.innerHTML = '';
-      spot.hotspots.forEach(hs => {
-        const hotspotEl = document.createElement('a-image');
-        hotspotEl.setAttribute('src', '#hotspot-icon');
-        hotspotEl.setAttribute('class', 'clickable');
-        hotspotEl.setAttribute('position', hs.position);
-        hotspotEl.setAttribute('rotation', hs.rotation);
-        // Membesarkan icon panah
-        hotspotEl.setAttribute('scale', '1.5 1.5 1.5');
 
-        hotspotEl.addEventListener('click', () => loadSpot(hs.targetSpot));
-        hotspotContainer.appendChild(hotspotEl);
+      spot.hotspots.forEach(hs => {
+        if (hs.invisible) {
+          const invEl = document.createElement('a-plane');
+          invEl.setAttribute('class', 'clickable');
+          invEl.setAttribute('position', hs.position);
+          invEl.setAttribute('rotation', hs.rotation || '-70 0 0');
+          invEl.setAttribute('scale', hs.scale || '3 3 3');
+          invEl.setAttribute('material', 'transparent: true; opacity: 0.001; depthTest: false');
+          invEl.addEventListener('click', (e) => {
+            if (e) e.stopPropagation();
+            loadSpot(hs.targetSpot);
+          });
+          hotspotContainer.appendChild(invEl);
+          return;
+        }
+
+        const isInfo = hs.type === 'info';
+        const hsGroup = document.createElement('a-entity');
+        hsGroup.setAttribute('position', hs.position);
+
+        if (isInfo) {
+          // Ikon Info SELALU berdiri tegak lurus vertikal menghadap mata kamera pengguna
+          hsGroup.setAttribute('look-at', '#camera');
+        } else {
+          hsGroup.setAttribute('rotation', hs.rotation || '-60 0 0');
+        }
+
+        const baseScale = hs.scale || (isInfo ? '0.4 0.4 0.4' : '0.75 0.75 0.75'); // Kecil jika Info
+        const fromScale = hs.scaleFrom || '0.7 0.7 0.7';
+        const toScale = hs.scaleTo || '0.85 0.85 0.85';
+        const pulseAnimConfig = `property: scale; from: ${fromScale}; to: ${toScale}; dir: alternate; loop: true; dur: 1200; easing: easeInOutSine`;
+
+        const iconSrc = isInfo ? '#info-icon' : '#hotspot-icon';
+
+        // 1. Ikon Hotspot (Panah Navigasi / Icon i Informasi)
+        const iconEl = document.createElement('a-image');
+        iconEl.setAttribute('src', iconSrc);
+        iconEl.setAttribute('class', 'clickable');
+        iconEl.setAttribute('scale', baseScale);
+        iconEl.setAttribute('position', '0 0 0');
+        iconEl.setAttribute('material', 'transparent: true');
+
+        // Panah navigasi berdenyut, sedangkan ikon Info TETAP STATIS (tidak berdenyut)
+        if (!isInfo) {
+          iconEl.setAttribute('animation', pulseAnimConfig);
+        }
+
+        // 2. Group Label Teks Badge (Default Sembunyi, Tampil Saat Di-hover Kursor)
+        let labelGroup = null;
+        if (hs.title) {
+          const hasDesc = isInfo && hs.description;
+          const titleText = hs.title;
+          const descText = hasDesc ? hs.description : '';
+
+          labelGroup = document.createElement('a-entity');
+          labelGroup.setAttribute('visible', 'false'); // Sembunyi secara default
+
+          if (hasDesc) {
+            // Card Info 2-Tingkat dengan Rounded Corners (Judul Biru + Deskripsi Putih di Bawah)
+            const maxLen = Math.max(titleText.length, descText.length * 0.65);
+            const badgeWidth = Math.max(1.6, Math.min(maxLen * 0.07 + 0.5, 3.2));
+            const labelX = (badgeWidth / 2) + 0.35;
+
+            labelGroup.setAttribute('position', `${labelX} 0 0.05`);
+            labelGroup.setAttribute('rotation', '0 0 0');
+
+            const cardHeight = 0.58;
+            const badgeEl = document.createElement('a-image');
+            badgeEl.setAttribute('class', 'clickable');
+            badgeEl.setAttribute('src', getBadgeDataURL('#29b6f6', '#ffffff'));
+            badgeEl.setAttribute('height', cardHeight.toString());
+            badgeEl.setAttribute('width', badgeWidth.toString());
+            badgeEl.setAttribute('material', 'transparent: true; opacity: 0.98; depthTest: false');
+
+            const textTitle = document.createElement('a-text');
+            textTitle.setAttribute('value', titleText);
+            textTitle.setAttribute('align', 'center');
+            textTitle.setAttribute('color', '#FFFFFF');
+            textTitle.setAttribute('width', (badgeWidth * 0.85).toString());
+            textTitle.setAttribute('wrap-count', Math.max(16, titleText.length + 2).toString());
+            textTitle.setAttribute('position', `0 0.16 0.02`);
+            textTitle.setAttribute('material', 'shader: flat; depthTest: false');
+
+            const descWrap = descText.length <= 25
+              ? Math.max(22, descText.length + 2)
+              : Math.max(26, Math.ceil(descText.length / 1.7) + 3);
+
+            const textDesc = document.createElement('a-text');
+            textDesc.setAttribute('value', descText);
+            textDesc.setAttribute('align', 'center');
+            textDesc.setAttribute('color', '#0f172a');
+            textDesc.setAttribute('width', (badgeWidth * 0.85).toString());
+            textDesc.setAttribute('wrap-count', descWrap.toString());
+            textDesc.setAttribute('position', `0 -0.11 0.02`);
+            textDesc.setAttribute('material', 'shader: flat; depthTest: false');
+
+            labelGroup.appendChild(badgeEl);
+            labelGroup.appendChild(textTitle);
+            labelGroup.appendChild(textDesc);
+          } else {
+            // Card 1-Tingkat dengan Rounded Corners (Navigasi / Informasi Tunggal)
+            const badgeWidth = Math.max(1.3, Math.min(titleText.length * 0.08 + 0.4, 2.8));
+            const labelX = (badgeWidth / 2) + 0.35;
+
+            if (isInfo) {
+              labelGroup.setAttribute('position', `${labelX} 0 0.05`);
+              labelGroup.setAttribute('rotation', '0 0 0');
+            } else {
+              labelGroup.setAttribute('position', `0 0.7 0.3`);
+              labelGroup.setAttribute('look-at', '#camera');
+            }
+
+            const badgeEl = document.createElement('a-image');
+            badgeEl.setAttribute('class', 'clickable');
+            badgeEl.setAttribute('src', getBadgeDataURL('#29b6f6'));
+            badgeEl.setAttribute('height', '0.30');
+            badgeEl.setAttribute('width', badgeWidth.toString());
+            badgeEl.setAttribute('material', 'transparent: true; opacity: 0.95; depthTest: false');
+
+            const textEl = document.createElement('a-text');
+            textEl.setAttribute('value', titleText);
+            textEl.setAttribute('align', 'center');
+            textEl.setAttribute('color', '#FFFFFF');
+            textEl.setAttribute('width', (badgeWidth * 0.85).toString());
+            textEl.setAttribute('wrap-count', Math.max(15, titleText.length + 2).toString());
+            textEl.setAttribute('position', '0 0 0.02');
+            textEl.setAttribute('material', 'shader: flat; depthTest: false');
+
+            labelGroup.appendChild(badgeEl);
+            labelGroup.appendChild(textEl);
+          }
+
+          hsGroup.appendChild(labelGroup);
+        }
+
+        // Tampilkan label & hentikan denyut ikon saat mouse/kursor di-hover
+        const showLabel = () => {
+          if (!isInfo) iconEl.removeAttribute('animation');
+          iconEl.setAttribute('scale', baseScale);
+          if (labelGroup) labelGroup.setAttribute('visible', 'true');
+        };
+
+        // Sembunyikan label & aktifkan kembali denyut ikon saat kursor digeser keluar
+        const hideLabel = () => {
+          if (!isInfo) iconEl.setAttribute('animation', pulseAnimConfig);
+          if (labelGroup) labelGroup.setAttribute('visible', 'false');
+        };
+
+        iconEl.addEventListener('mouseenter', showLabel);
+        iconEl.addEventListener('mouseleave', hideLabel);
+
+        if (labelGroup) {
+          labelGroup.addEventListener('mouseenter', showLabel);
+          labelGroup.addEventListener('mouseleave', hideLabel);
+        }
+
+        // Pindah lokasi jika Navigasi, atau Buka Pop-up jika Info
+        const handleClick = (e) => {
+          if (e) e.stopPropagation();
+          if (isInfo) {
+            document.getElementById('info-modal-title').textContent = hs.title || 'Informasi';
+            document.getElementById('info-modal-desc').textContent = hs.description || 'Layanan informasi dan reservasi.';
+            document.getElementById('info-modal').style.display = 'flex';
+          } else {
+            loadSpot(hs.targetSpot);
+          }
+        };
+
+        iconEl.addEventListener('click', handleClick);
+        if (labelGroup) {
+          labelGroup.addEventListener('click', handleClick);
+        }
+
+        hsGroup.appendChild(iconEl);
+        hotspotContainer.appendChild(hsGroup);
       });
 
       // Render Model 3D
@@ -153,9 +456,27 @@
       });
     }
 
-    // Jalankan pertama kali
-    window.addEventListener('load', () => loadSpot('nomor1'));
+    // Jalankan pertama kali & pasang listener klik jalan/lantai (groundTarget)
+    window.addEventListener('load', () => {
+      const skyEl = document.querySelector('#main-sky');
+      if (skyEl) {
+        skyEl.addEventListener('click', (e) => {
+          // Jangan eksekusi perpindahan jika mode editor sedang terbuka/aktif
+          const editorControls = document.getElementById('editor-controls');
+          if (editorControls && editorControls.style.display !== 'none') return;
+
+          const currentSpot = tourData[currentSpotId];
+          if (currentSpot && currentSpot.groundTarget) {
+            loadSpot(currentSpot.groundTarget);
+          }
+        });
+      }
+      loadSpot('nomor1');
+    });
   </script>
+
+  <!-- TEMPORARY NAVIGATION EDITOR (Hapus baris script di bawah ini jika sudah selesai menentukan posisi koordinat) -->
+  <script src="navigation-editor.js"></script>
 </body>
 
 </html>

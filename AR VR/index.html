@@ -123,7 +123,8 @@
       "nomor3": {
         sky: "#img-nomor3",
         hotspots: [
-          { targetSpot: "nomor2", title: "Keluar Halaman Benteng", position: "8.31 0.63 -1.36", rotation: "-65 -75 0" },
+          { targetSpot: "nomor12", title: "Spot 12", position: "-5.89 -0.46 1.79", rotation: "-85 108 0" },
+          { targetSpot: "nomor16", title: "Spot 16", position: "8.31 0.63 -1.36", rotation: "-65 -75 0" }
         ],
         models: []
       },
@@ -131,7 +132,10 @@
       // --- DATA GAMBAR 4 ---
       "nomor4": {
         sky: "#img-nomor4",
-        hotspots: [],
+        hotspots: [
+          { targetSpot: "nomor6", title: "Spot 6", position: "-5.86 -0.11 -0.92", rotation: "-80 90 0" },
+          { targetSpot: "nomor16", title: "Spot 16", position: "0.93 0 5.56", rotation: "-75 177 0" }
+        ],
         models: [
           { modelId: "#model3", position: "0 0 -5", scale: "2.5 2.5 2.5", rotation: "0 0 0" }
         ]
@@ -143,15 +147,53 @@
         hotspots: [
           { targetSpot: "nomor15", title: "Ke Spot 15", position: "6.19 0.88 -0.4", rotation: "-60 98 0" }
         ],
-        models: []
+        models: [
+          { modelId: "#model3", position: "0 0 -5", scale: "2.5 2.5 2.5", rotation: "0 0 0" }
+        ]
       },
-      "nomor6": { sky: "#img-nomor6", hotspots: [], models: [] },
+      "nomor6": {
+        sky: "#img-nomor6",
+        hotspots: [
+          { targetSpot: "nomor8", title: "Spot 8", position: "-4.47 -0.18 -4.3", rotation: "-85 0 0" },
+          { targetSpot: "nomor4", title: "Spot 4", position: "-3.83 -0.24 5.1", rotation: "-85 187 0" }
+        ],
+        models: [
+          { modelId: "#model3", position: "0 0 -5", scale: "2.5 2.5 2.5", rotation: "0 0 0" }
+        ]
+      },
       "nomor7": { sky: "#img-nomor7", hotspots: [], models: [] },
-      "nomor8": { sky: "#img-nomor8", hotspots: [], models: [] },
+      "nomor8": {
+        sky: "#img-nomor8",
+        hotspots: [
+          { targetSpot: "nomor10", title: "Spot 10", position: "0.5 -0.72 -5.44", rotation: "-80 353 0" },
+          { targetSpot: "nomor6", title: "Spot 6", position: "-6.44 -0.65 0.94", rotation: "-80 74 0" }
+        ],
+        models: [
+          { modelId: "#model3", position: "0 0 -5", scale: "2.5 2.5 2.5", rotation: "0 0 0" }
+        ]
+      },
       "nomor9": { sky: "#img-nomor9", hotspots: [], models: [] },
-      "nomor10": { sky: "#img-nomor10", hotspots: [], models: [] },
+      "nomor10": {
+        sky: "#img-nomor10",
+        hotspots: [
+          { targetSpot: "nomor8", title: "Spot 8", position: "-5.91 -0.72 -5.7", rotation: "-75 0 0" },
+          { targetSpot: "nomor12", title: "Spot 12", position: "6.7 -0.74 -0.23", rotation: "-75 267 0" }
+        ],
+        models: [
+          { modelId: "#model3", position: "0 0 -5", scale: "2.5 2.5 2.5", rotation: "0 0 0" }
+        ]
+      },
       "nomor11": { sky: "#img-nomor11", hotspots: [], models: [] },
-      "nomor12": { sky: "#img-nomor12", hotspots: [], models: [] },
+      "nomor12": {
+        sky: "#img-nomor12",
+        hotspots: [
+          { targetSpot: "nomor10", title: "Spot 10", position: "-3.38 -1.22 5.97", rotation: "-70 152 0" },
+          { targetSpot: "nomor3", title: "Spot 3", position: "-3.94 -0.89 -4.89", rotation: "-80 21 0" }
+        ],
+        models: [
+          { modelId: "#model3", position: "1 0 -4", scale: "2.5 2.5 2.5", rotation: "0 90 0" }
+        ]
+      },
       "nomor13": { sky: "#img-nomor13", hotspots: [], models: [] },
       "nomor14": { sky: "#img-nomor14", hotspots: [], models: [] },
       "nomor15": {
@@ -166,7 +208,8 @@
         sky: "#img-nomor16",
         hotspots: [
           { targetSpot: "nomor3", title: "Ke Spot 3", position: "-4.77 0.9 3.41", rotation: "-65 110 0" },
-          { targetSpot: "nomor15", title: "Ke Spot 15", position: "5.11 0.88 2.36", rotation: "-65 85 0" }
+          { targetSpot: "nomor15", title: "Ke Spot 15", position: "5.11 0.88 2.36", rotation: "-65 85 0" },
+          { targetSpot: "nomor4", title: "Spot 4", position: "-5.1 0.01 -2.6", rotation: "-75 19 0" }
         ],
         models: []
       },
@@ -242,7 +285,7 @@
         const isInfo = hs.type === 'info';
         const hsGroup = document.createElement('a-entity');
         hsGroup.setAttribute('position', hs.position);
-        
+
         if (isInfo) {
           // Ikon Info SELALU berdiri tegak lurus vertikal menghadap mata kamera pengguna
           hsGroup.setAttribute('look-at', '#camera');
@@ -306,8 +349,8 @@
             textTitle.setAttribute('position', `0 0.16 0.02`);
             textTitle.setAttribute('material', 'shader: flat; depthTest: false');
 
-            const descWrap = descText.length <= 25 
-              ? Math.max(22, descText.length + 2) 
+            const descWrap = descText.length <= 25
+              ? Math.max(22, descText.length + 2)
               : Math.max(26, Math.ceil(descText.length / 1.7) + 3);
 
             const textDesc = document.createElement('a-text');

@@ -95,7 +95,6 @@
   <!-- ================= 5. LOGIKA NAVIGASI JAVASCRIPT ================= -->
   <script>
     const tourData = {
-      // --- DATA GAMBAR 1 (Gerbang Utama) ---
       "nomor1": {
         sky: "#img-nomor1",
         hotspots: [
@@ -104,8 +103,6 @@
         models: [
         ]
       },
-
-      // --- DATA GAMBAR 2 (Halaman Dalam) ---
       "nomor2": {
         sky: "#img-nomor2",
         hotspots: [
@@ -116,8 +113,6 @@
         models: [
         ]
       },
-
-      // --- DATA GAMBAR 3 ---
       "nomor3": {
         sky: "#img-nomor3",
         hotspots: [
@@ -125,10 +120,9 @@
           { targetSpot: "nomor12", title: "Spot 12", position: "-5.89 -0.46 1.79", rotation: "-85 108 0" },
           { targetSpot: "nomor16", title: "Spot 16", position: "8.31 0.63 -1.36", rotation: "-65 -75 0" }
         ],
-        models: []
+        models: [
+        ]
       },
-
-      // --- DATA GAMBAR 4 ---
       "nomor4": {
         sky: "#img-nomor4",
         hotspots: [
@@ -139,15 +133,14 @@
         models: [
         ]
       },
-
-      // --- DATA GAMBAR 5 s.d. 18 ---
       "nomor5": {
         sky: "#img-nomor5",
         hotspots: [
           { targetSpot: "nomor7", title: "Spot 7", position: "-0.14 0.32 -5.99", rotation: "-90 0 0" },
           { targetSpot: "nomor15", title: "Spot 15", position: "6.19 0.88 -0.4", rotation: "-60 98 0" }
         ],
-        models: []
+        models: [
+        ]
       },
       "nomor6": {
         sky: "#img-nomor6",
@@ -160,12 +153,13 @@
         ]
       },
       "nomor7": {
-        sky: "#img-nomor7", hotspots: [
+        sky: "#img-nomor7",
+        hotspots: [
           { targetSpot: "nomor9", title: "Spot 9", position: "-6.94 0.33 0.4", rotation: "-70 89 0" },
           { targetSpot: "nomor5", title: "Spot 5", position: "6.98 0.49 0.23", rotation: "-80 268 0" }
         ],
         models: [
-
+          { modelId: "#model2", position: "4.89 -1.80 -6.95", scale: "7.05 7.05 7.05", rotation: "0 154 0" }
         ]
       },
       "nomor8": {
@@ -178,13 +172,14 @@
         ]
       },
       "nomor9": {
-        sky: "#img-nomor9", hotspots: [
+        sky: "#img-nomor9",
+        hotspots: [
           { targetSpot: "nomor10", title: "Spot 10", position: "-7.99 -0.46 0.03", rotation: "-70 87 0" },
           { targetSpot: "nomor11", title: "Spot 11", position: "-4.98 0.19 3.34", rotation: "-85 127 0" },
           { targetSpot: "nomor7", title: "Spot 7", position: "1.81 0.22 -7.85", rotation: "-70 348 0" }
         ],
         models: [
-
+          { modelId: "#model1", position: "-4.78 -1.36 -12.43", scale: "1.5 1.5 1.5", rotation: "0 330 0" }
         ]
       },
       "nomor10": {
@@ -199,9 +194,12 @@
         ]
       },
       "nomor11": {
-        sky: "#img-nomor11", hotspots: [
+        sky: "#img-nomor11",
+        hotspots: [
           { targetSpot: "nomor9", title: "Spot 9", position: "6.42 -0.47 0.8", rotation: "-75 251 0" }
-        ], models: []
+        ],
+        models: [
+        ]
       },
       "nomor12": {
         sky: "#img-nomor12",
@@ -212,13 +210,23 @@
         models: [
         ]
       },
-      "nomor13": { sky: "#img-nomor13", hotspots: [], models: [] },
+      "nomor13": {
+        sky: "#img-nomor13",
+        hotspots: [
+        ],
+        models: [
+        ]
+      },
       "nomor14": {
-        sky: "#img-nomor14", hotspots: [
+        sky: "#img-nomor14",
+        hotspots: [
           { targetSpot: "nomor6", title: "Spot 6", position: "-0.21 -0.24 -7.84", rotation: "-70 0 0" },
           { targetSpot: "nomor3", title: "Spot 3", position: "7.2 0 3.74", rotation: "-70 240 0" },
           { targetSpot: "nomor10", title: "Spot 10", position: "-6.95 -0.71 4.32", rotation: "-70 121 0" }
-        ], models: []
+        ],
+        models: [
+          { modelId: "#model4", position: "-27.40 0.30 0.77", scale: "2 2 2", rotation: "0 360 0" }
+        ]
       },
       "nomor15": {
         sky: "#img-nomor15",
@@ -227,7 +235,8 @@
           { targetSpot: "nomor17", title: "Ke Spot 17", position: "-0.94 -0.81 -4.65", rotation: "-70 0 0" },
           { targetSpot: "nomor5", position: "5.84 -0.78 -1.36", rotation: "-65 270 0" }
         ],
-        models: []
+        models: [
+        ]
       },
       "nomor16": {
         sky: "#img-nomor16",
@@ -237,19 +246,25 @@
           { targetSpot: "nomor15", title: "Ke Spot 15", position: "5.11 0.88 2.36", rotation: "-65 85 0" },
           { targetSpot: "nomor4", title: "Spot 4", position: "-5.1 0.01 -2.6", rotation: "-75 19 0" }
         ],
-        models: []
+        models: [
+        ]
       },
       "nomor17": {
         sky: "#img-nomor17",
         hotspots: [
           { targetSpot: "nomor15", title: "Turun Ke Spot 15", position: "-1.52 0.1 5.73", rotation: "-50 0 0" }
         ],
-        models: []
+        models: [
+          { modelId: "#model3", position: "9.52 1.20 -8.50", scale: "9.75 9.75 9.75", rotation: "0 206 0" }
+        ]
       },
       "nomor18": {
-        sky: "#img-nomor18", hotspots: [
+        sky: "#img-nomor18",
+        hotspots: [
           { targetSpot: "nomor4", title: "Spot 4", position: "-5.91 -0.29 -0.47", rotation: "-70 87 0" }
-        ], models: []
+        ],
+        models: [
+        ]
       }
     };
 
@@ -507,6 +522,9 @@
 
   <!-- TEMPORARY NAVIGATION EDITOR (Hapus baris script di bawah ini jika sudah selesai menentukan posisi koordinat) -->
   <script src="navigation-editor.js"></script>
+
+  <!-- TEMPORARY MODEL EDITOR untuk object 3D (Hapus baris script di bawah ini jika sudah selesai) -->
+  <script src="model-editor.js"></script>
 </body>
 
 </html>

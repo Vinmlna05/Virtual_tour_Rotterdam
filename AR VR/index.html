@@ -247,12 +247,15 @@
       // Peta ID model -> nama file. Cukup taruh file .glb di folder yang sama,
       // model akan otomatis tampil saat spot dibuka (tanpa ubah kode lain).
       const MODEL_FILES = {
-        "#model1": "3Dmodel1.glb",
-        "#model2": "3Dmodel2.glb",
-        "#model3": "3Dmodel3.glb",
-        "#model4": "3Dmodel4.glb",
-        "#model5": "3Dmodel5.glb",
+        "#model1": "1.glb",
+        "#model2": "2.glb",
+        "#model3": "3.glb",
+        "#model4": "4.glb",
+        "#model5": "5.glb",
       };
+
+      // Model 3D disembunyikan sementara tanpa menghapus konfigurasi posisinya.
+      const SHOW_3D_MODELS = false;
 
       const tourData = {
         nomor1: {
@@ -922,6 +925,8 @@
         // Render Model 3D (aman: jika file .glb belum ada, model dilewati tanpa merusak tur)
         const modelContainer = document.querySelector("#models-container");
         modelContainer.innerHTML = "";
+        if (!SHOW_3D_MODELS) return;
+
         spot.models.forEach((md) => {
           // Terima "#model2" (lewat MODEL_FILES) atau langsung nama file seperti "3Dmodel2.glb"
           const file = MODEL_FILES[md.modelId] || md.file || md.modelId;

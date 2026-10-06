@@ -15,7 +15,6 @@
 
     <!-- ================= 1. MANAJEMEN ASSET ================= -->
     <a-assets>
-      <!-- Preload Foto 360 -->
       <!-- Preload Foto 360 (NOMOR1 s.d. NOMOR18) -->
       <img id="img-nomor1" src="NOMOR1.jpg">
       <img id="img-nomor2" src="NOMOR2.jpg">
@@ -40,12 +39,12 @@
       <img id="hotspot-icon" src="arrow_icon.svg">
       <img id="info-icon" src="info_icon.svg">
 
-      <!-- Preload Model 3D -->
-      <a-asset-item id="model1" src="3Dmodel1.glb"></a-asset-item>
-      <a-asset-item id="model2" src="3Dmodel2.glb"></a-asset-item>
-      <a-asset-item id="model3" src="3Dmodel3.glb"></a-asset-item>
-      <a-asset-item id="model4" src="3Dmodel4.glb"></a-asset-item>
-      <a-asset-item id="model5" src="3Dmodel5.glb"></a-asset-item>
+      <!--
+        Model 3D (.glb) SENGAJA TIDAK di-preload di sini.
+        Jika <a-asset-item> menunjuk file yang belum ada, scene bisa gagal/macet saat loading.
+        Model sekarang dimuat langsung saat spot dibuka (lihat MODEL_FILES di script bawah),
+        dan otomatis dilewati bila filenya belum ada.
+      -->
     </a-assets>
 
     <!-- ================= 2. KAMERA & KURSOR ================= -->
@@ -95,6 +94,16 @@
 
   <!-- ================= 5. LOGIKA NAVIGASI JAVASCRIPT ================= -->
   <script>
+    // Peta ID model -> nama file. Cukup taruh file .glb di folder yang sama,
+    // model akan otomatis tampil saat spot dibuka (tanpa ubah kode lain).
+    const MODEL_FILES = {
+      "#model1": "3Dmodel1.glb",
+      "#model2": "3Dmodel2.glb",
+      "#model3": "3Dmodel3.glb",
+      "#model4": "3Dmodel4.glb",
+      "#model5": "3Dmodel5.glb"
+    };
+
     const tourData = {
       "nomor1": {
         sky: "#img-nomor1",
@@ -192,7 +201,6 @@
           { targetSpot: "nomor12", title: "Spot 12", position: "6.7 -0.74 -0.23", rotation: "-75 267 0" }
         ],
         models: [
-          { modelId: "#model2", position: "0.00 -1.80 -6.00", scale: "1 1 1", rotation: "0 0 0" },
           { modelId: "#model5", position: "9.82 -1.80 6.15", scale: "0.4 0.4 0.4", rotation: "270 163 0" }
         ]
       },
@@ -491,15 +499,28 @@
         hotspotContainer.appendChild(hsGroup);
       });
 
-      // Render Model 3D
+      // Render Model 3D (aman: jika file .glb belum ada, model dilewati tanpa merusak tur)
       const modelContainer = document.querySelector('#models-container');
       modelContainer.innerHTML = '';
       spot.models.forEach(md => {
+        // Terima "#model2" (lewat MODEL_FILES) atau langsung nama file seperti "3Dmodel2.glb"
+        const file = MODEL_FILES[md.modelId] || md.file || md.modelId;
+        if (!file) return;
+
         const modelEl = document.createElement('a-entity');
-        modelEl.setAttribute('gltf-model', md.modelId);
         modelEl.setAttribute('position', md.position);
         modelEl.setAttribute('scale', md.scale);
         modelEl.setAttribute('rotation', md.rotation);
+
+        // Kalau file tidak ditemukan / gagal dimuat, hapus entity & lanjutkan tanpa error fatal
+        modelEl.addEventListener('model-error', () => {
+          console.warn('[Tur 360] Model 3D belum tersedia, dilewati:', file);
+          if (modelEl.parentNode) modelEl.parentNode.removeChild(modelEl);
+        });
+
+        // Dimuat langsung via URL (bukan lewat <a-assets>), jadi tidak memblokir scene.
+        // Begitu file .glb ada di folder, model otomatis tampil saat spot dibuka.
+        modelEl.setAttribute('gltf-model', `url(${file})`);
         modelContainer.appendChild(modelEl);
       });
     }

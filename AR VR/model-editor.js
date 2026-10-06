@@ -440,7 +440,7 @@
   function injectEditorUI() {
     const spotOptions = Array.from({ length: 18 }, (_, i) =>
       `<option value="nomor${i + 1}">nomor${i + 1}</option>`).join('');
-    const modelOptions = [1, 2, 3, 4].map(n =>
+    const modelOptions = [1, 2, 3, 4, 5].map(n =>
       `<option value="#model${n}">3Dmodel${n}.glb</option>`).join('');
 
     const div = document.createElement('div');
